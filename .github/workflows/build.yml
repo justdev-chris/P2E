@@ -1,0 +1,35 @@
+name: uhm idk build da exe thing containing python
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.12
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pywebview pyinstaller
+
+    - name: Build exe with PyInstaller
+      run: |
+        pyinstaller --onefile --windowed app.py --icon=app.ico
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: python-app-exe
+        path: dist/app.exe
