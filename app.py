@@ -4,7 +4,7 @@ import time
 import threading
 import random
 
-# ------------------ FUNCTIONS ------------------ #
+# ------------------ FUNCTIONS ----------------- #
 def run_command():
     cmd = command_entry.get()
     command_entry.delete(0, tk.END)
