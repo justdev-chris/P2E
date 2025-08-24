@@ -32,7 +32,7 @@ def show_splash():
     splash_root.update()
 
     # Animate progress bar while showing splash for 6 seconds
-    for i in range(60):
+    for i in range(200):
         progress_width = (i+1) * (400/60)  # 400px full width
         progress_bar.coords(bar, 0, 0, progress_width, 20)
         splash_root.update()
