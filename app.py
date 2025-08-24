@@ -8,7 +8,7 @@ from PyQt5.QtGui import QPixmap, QImage
 class Browser(QMainWindow):
     def __init__(self, url):
         super().__init__()
-        self.setWindowTitle("My Cute App ✨")
+        self.setWindowTitle("TF2")
         self.browser = QWebEngineView()
         self.browser.setUrl(QUrl(url))
         self.setCentralWidget(self.browser)
@@ -23,7 +23,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
 
     # Use a hosted image URL
-    image_url = "https://example.com/splash.png"
+    image_url = "https://i.imgur.com/gDFZh7W.jpeg"
     pixmap = load_pixmap_from_url(image_url)
     splash = QSplashScreen(pixmap, Qt.WindowStaysOnTopHint)
     splash.show()
@@ -38,6 +38,6 @@ if __name__ == "__main__":
         animation.finished.connect(lambda: splash.close())
 
     QTimer.singleShot(10000, fade_splash)  # show splash 10s
-    QTimer.singleShot(11000, lambda: Browser("https://example.com").show())  # show browser after fade
+    QTimer.singleShot(11000, lambda: Browser("https://play.geforcenow.com/games?game-id=40512534-ad27-4a12-afa7-6fc412288072&lang=en_US&asset-id=01_547b2064-13ad-4ba5-b928-d2770accddf1").show())  # show browser after fade
 
     sys.exit(app.exec_())
