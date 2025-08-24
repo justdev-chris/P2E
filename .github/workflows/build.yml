@@ -22,7 +22,7 @@ jobs:
     - name: install the dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pyinstaller requests pyqt5
+        pip install pyinstaller webview
 
     - name: build exe
       run: |
