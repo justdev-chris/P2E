@@ -1,5 +1,5 @@
 def main():
-    print("Hello from your lil catboy program!")
+    print("Hello if u see this that means u didnt change the app.py with your code or you didnt fork this repo!")
     input("Press Enter to close...")
 
 main()
