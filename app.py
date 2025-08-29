@@ -1,28 +1,43 @@
 import webview
-import keyboard
 
-# URL for Ultimate Cat Clicker
-URL = "https://catsdevs.online/Ultimate-Cat-Clicker/UCC/"
+# lil function to toggle fullscreen
+def toggle_fullscreen(window):
+    window.toggle_fullscreen()
 
-# Create window (comfy size, not fullscreen)
-window = webview.create_window(
-    "Ultimate Cat Clicker",
-    URL,
-    width=1000,
-    height=700,
-    resizable=True
-)
+def main():
+    # create window (smaller, windowed)
+    window = webview.create_window(
+        "Ultimate Cat Clicker",
+        "https://catsdevs.online/Ultimate-Cat-Clicker/UCC/",
+        width=1000,
+        height=700,
+        resizable=True
+    )
 
-# Toggle fullscreen with F11
-def toggle_fullscreen():
-    if window.fullscreen:
-        window.fullscreen = False
-        webview.resize_window(window, 1000, 700)
-    else:
-        window.fullscreen = True
+    # inject JS for F11 + Esc hotkeys
+    def inject_hotkeys():
+        window.evaluate_js("""
+            document.addEventListener("keydown", function(e) {
+                if (e.key === "F11") {
+                    pywebview.api.toggle()
+                    e.preventDefault()
+                }
+                if (e.key === "Escape") {
+                    pywebview.api.toggle()
+                    e.preventDefault()
+                }
+            });
+        """)
 
-# Hotkey binding
-keyboard.add_hotkey("F11", toggle_fullscreen)
+    # start webview + expose toggle
+    webview.start(
+        func=inject_hotkeys,
+        gui="edgechromium",
+        debug=True,
+        http_server=True,
+        js_api={"toggle": lambda: toggle_fullscreen(window)},
+        window=window
+    )
 
-# Start app
-webview.start()
+if __name__ == "__main__":
+    main()
