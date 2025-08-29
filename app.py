@@ -1,43 +1,23 @@
 import webview
+import threading
+import keyboard  # make sure 'keyboard' module is installed
 
-# lil function to toggle fullscreen
-def toggle_fullscreen(window):
-    window.toggle_fullscreen()
+window = webview.create_window(
+    "Ultimate Cat Clicker",
+    "https://catsdevs.online/Ultimate-Cat-Clicker/UCC/",
+    width=900,
+    height=600,
+    resizable=True
+)
 
-def main():
-    # create window (smaller, windowed)
-    window = webview.create_window(
-        "Ultimate Cat Clicker",
-        "https://catsdevs.online/Ultimate-Cat-Clicker/UCC/",
-        width=1000,
-        height=700,
-        resizable=True
-    )
+def fullscreen_control():
+    while True:
+        key = keyboard.read_event()
+        if key.event_type == keyboard.KEY_DOWN:
+            if key.name == "f11":
+                window.toggle_fullscreen()
+            elif key.name == "esc" and window.fullscreen:
+                window.toggle_fullscreen()  # ESC exits fullscreen
 
-    # inject JS for F11 + Esc hotkeys
-    def inject_hotkeys():
-        window.evaluate_js("""
-            document.addEventListener("keydown", function(e) {
-                if (e.key === "F11") {
-                    pywebview.api.toggle()
-                    e.preventDefault()
-                }
-                if (e.key === "Escape") {
-                    pywebview.api.toggle()
-                    e.preventDefault()
-                }
-            });
-        """)
-
-    # start webview + expose toggle
-    webview.start(
-        func=inject_hotkeys,
-        gui="edgechromium",
-        debug=True,
-        http_server=True,
-        js_api={"toggle": lambda: toggle_fullscreen(window)},
-        window=window
-    )
-
-if __name__ == "__main__":
-    main()
+threading.Thread(target=fullscreen_control, daemon=True).start()
+webview.start(debug=True)
