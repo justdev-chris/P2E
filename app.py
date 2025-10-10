@@ -1,23 +1,63 @@
-import webview
-import threading
-import keyboard  # make sure 'keyboard' module is installed
+import sys
+import subprocess
+from PyQt6.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout
+from PyQt6.QtCore import Qt, QUrl
+from PyQt6.QtMultimedia import QMediaPlayer, QAudioOutput
+from PyQt6.QtMultimediaWidgets import QVideoWidget
 
-window = webview.create_window(
-    "Ultimate Cat Clicker",
-    "https://catsdevs.online/Ultimate-Cat-Clicker/UCC/",
-    width=900,
-    height=600,
-    resizable=True
-)
+class CustomDesktop(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("My Custom GUI")
+        self.showMaximized()  # Full screen
 
-def fullscreen_control():
-    while True:
-        key = keyboard.read_event()
-        if key.event_type == keyboard.KEY_DOWN:
-            if key.name == "f11":
-                window.toggle_fullscreen()
-            elif key.name == "esc" and window.fullscreen:
-                window.toggle_fullscreen()  # ESC exits fullscreen
+        # Video wallpaper
+        self.video_widget = QVideoWidget(self)
+        self.video_widget.setGeometry(0, 0, self.width(), self.height())
+        self.video_widget.setAspectRatioMode(Qt.AspectRatioMode.KeepAspectRatioByExpanding)
 
-threading.Thread(target=fullscreen_control, daemon=True).start()
-webview.start(debug=True)
+        self.media_player = QMediaPlayer(self)
+        self.audio_output = QAudioOutput(self)
+        self.media_player.setAudioOutput(self.audio_output)
+        self.audio_output.setVolume(0)  # Mute wallpaper audio
+        self.media_player.setVideoOutput(self.video_widget)
+        self.media_player.setSource(QUrl.fromLocalFile("wallpaper.mp4"))  # Replace with your video
+        self.media_player.setLoops(-1)  # Loop indefinitely
+        self.media_player.play()
+
+        # Taskbar
+        self.taskbar = QWidget(self)
+        self.taskbar.setStyleSheet("background-color: rgba(0,0,0,180);")
+        self.taskbar.setFixedHeight(50)
+        self.taskbar_layout = QHBoxLayout()
+        self.taskbar.setLayout(self.taskbar_layout)
+
+        # Example apps (replace with paths to real executables)
+        apps = {
+            "Notepad": "notepad.exe",
+            "Calculator": "calc.exe",
+            "Paint": "mspaint.exe"
+        }
+        for name, path in apps.items():
+            btn = QPushButton(name)
+            btn.setStyleSheet("color: white; font-weight: bold; font-size: 16px;")
+            btn.clicked.connect(lambda checked, p=path: self.launch_app(p))
+            self.taskbar_layout.addWidget(btn)
+
+        # Layout
+        main_layout = QVBoxLayout(self)
+        main_layout.addStretch()
+        main_layout.addWidget(self.taskbar)
+        main_layout.setContentsMargins(0,0,0,0)
+        self.setLayout(main_layout)
+
+    def launch_app(self, path):
+        try:
+            subprocess.Popen(path)
+        except Exception as e:
+            print(f"Failed to open {path}: {e}")
+
+app = QApplication(sys.argv)
+window = CustomDesktop()
+window.show()
+sys.exit(app.exec())
