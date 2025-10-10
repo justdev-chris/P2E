@@ -21,7 +21,7 @@ class CustomDesktop(QWidget):
         self.media_player.setAudioOutput(self.audio_output)
         self.audio_output.setVolume(10)  # Mute wallpaper audio
         self.media_player.setVideoOutput(self.video_widget)
-        self.media_player.setSource(QUrl.fromLocalFile("C:\Users\moren\Downloads\boykisser-meme.gif"))  # Replace with your video
+        self.media_player.setSource(QUrl.fromLocalFile(r"C:\Users\moren\Downloads\boykisser-meme.gif"))  # Replace with your video
         self.media_player.setLoops(-1)  # Loop indefinitely
         self.media_player.play()
 
