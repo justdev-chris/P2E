@@ -8,7 +8,7 @@ from PyQt6.QtMultimediaWidgets import QVideoWidget
 class CustomDesktop(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("My Custom GUI")
+        self.setWindowTitle("catgui")
         self.showMaximized()  # Full screen
 
         # Video wallpaper
@@ -19,9 +19,9 @@ class CustomDesktop(QWidget):
         self.media_player = QMediaPlayer(self)
         self.audio_output = QAudioOutput(self)
         self.media_player.setAudioOutput(self.audio_output)
-        self.audio_output.setVolume(0)  # Mute wallpaper audio
+        self.audio_output.setVolume(10)  # Mute wallpaper audio
         self.media_player.setVideoOutput(self.video_widget)
-        self.media_player.setSource(QUrl.fromLocalFile("wallpaper.mp4"))  # Replace with your video
+        self.media_player.setSource(QUrl.fromLocalFile("C:\Users\moren\Downloads\boykisser-meme.gif"))  # Replace with your video
         self.media_player.setLoops(-1)  # Loop indefinitely
         self.media_player.play()
 
@@ -34,9 +34,12 @@ class CustomDesktop(QWidget):
 
         # Example apps (replace with paths to real executables)
         apps = {
-            "Notepad": "notepad.exe",
+            "Notepad": "C:\Program Files\WindowsApps\Microsoft.WindowsNotepad_11.2507.26.0_x64__8wekyb3d8bbwe\Notepad\Notepad.exe",
             "Calculator": "calc.exe",
-            "Paint": "mspaint.exe"
+            "Paint": "C:\Program Files\WindowsApps\Microsoft.Paint_11.2508.361.0_x64__8wekyb3d8bbwe\PaintApp\mspaint.exe"
+            "Discord": "C:\Users\moren\OneDrive\Desktop\Discord.lnk"
+            "Microsoft Edge": "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
+            "Minecraft": "C:\Users\moren\OneDrive\Desktop\Minecraft.exe"
         }
         for name, path in apps.items():
             btn = QPushButton(name)
