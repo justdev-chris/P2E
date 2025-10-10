@@ -34,12 +34,11 @@ class CustomDesktop(QWidget):
 
         # Example apps (replace with paths to real executables)
         apps = {
-            "Notepad": "C:\Program Files\WindowsApps\Microsoft.WindowsNotepad_11.2507.26.0_x64__8wekyb3d8bbwe\Notepad\Notepad.exe",
-            "Calculator": "calc.exe",
-            "Paint": "C:\Program Files\WindowsApps\Microsoft.Paint_11.2508.361.0_x64__8wekyb3d8bbwe\PaintApp\mspaint.exe"
-            "Discord": "C:\Users\moren\OneDrive\Desktop\Discord.lnk"
-            "Microsoft Edge": "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
-            "Minecraft": "C:\Users\moren\OneDrive\Desktop\Minecraft.exe"
+            "Notepad": r"C:\Program Files\WindowsApps\Microsoft.WindowsNotepad_11.2507.26.0_x64__8wekyb3d8bbwe\Notepad\Notepad.exe",
+            "Paint": r"C:\Program Files\WindowsApps\Microsoft.Paint_11.2508.361.0_x64__8wekyb3d8bbwe\PaintApp\mspaint.exe",
+            "Discord": r"C:\Users\moren\OneDrive\Desktop\Discord.lnk",
+            "Microsoft Edge": r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+            "Minecraft": r"C:\Users\moren\OneDrive\Desktop\Minecraft.exe"
         }
         for name, path in apps.items():
             btn = QPushButton(name)
