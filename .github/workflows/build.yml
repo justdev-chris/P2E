@@ -17,12 +17,12 @@ jobs:
     - name: set python up
       uses: actions/setup-python@v4
       with:
-        python-version: 3.12
+        python-version: 3.10
 
     - name: install the dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pyinstaller tkinter requests
+        pip install pyinstaller tkinterweb requests
     - name: build exe
       run: |
         pyinstaller --onefile --windowed app.py --icon=app.ico
