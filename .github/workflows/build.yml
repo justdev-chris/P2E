@@ -31,4 +31,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: build
-        path: dist/Ultimate Cat Clicker.exe
+        path: dist/app.exe
