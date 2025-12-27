@@ -25,7 +25,7 @@ jobs:
         pip install pyinstaller pywebview
     - name: build exe
       run: |
-        pyinstaller --onefile --windowed app.py --icon=app.ico
+        pyinstaller --onefile app.py --icon=app.ico
 
     - name: upload to artifacts
       uses: actions/upload-artifact@v4
