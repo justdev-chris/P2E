@@ -9,7 +9,7 @@ import threading
 class EFIVM_GUI:
     def __init__(self):
         self.root = tk.Tk()
-        self.root.title("stupid nigga efi thing")
+        self.root.title("efi vm")
         self.root.geometry("700x600")
         
         # Style
