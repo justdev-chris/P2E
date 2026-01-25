@@ -1,4 +1,3 @@
-# efivm_gui_windows.py
 import os
 import sys
 import subprocess
@@ -11,7 +10,7 @@ import struct
 class EFIVM_GUI:
     def __init__(self):
         self.root = tk.Tk()
-        self.root.title("stupid nigger efi thing")
+        self.root.title("efi vm")
         self.root.geometry("700x600")
         
         # Check for QEMU
