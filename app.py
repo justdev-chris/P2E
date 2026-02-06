@@ -1,26 +1,31 @@
 import customtkinter as ctk
 from pypresence import Presence
-from PIL import Image
 import json
 import os
 
 class NekoRPC(ctk.CTk):
     def __init__(self):
         super().__init__()
+
+        # Window Setup
         self.title("NekoRPC")
-        self.geometry("450x750")
+        self.geometry("400x550")
         self.rpc = None
-        self.preview_img = None
 
         # --- UI Elements ---
-        ctk.CTkLabel(self, text="Client ID:").pack(pady=(10, 0))
-        self.cid_entry = ctk.CTkEntry(self, width=300)
+        ctk.CTkLabel(self, text="NekoRPC Controller", font=("Arial", 20, "bold")).pack(pady=20)
+
+        # Client ID Field
+        ctk.CTkLabel(self, text="Client ID (Application ID):").pack(pady=(10, 0))
+        self.cid_entry = ctk.CTkEntry(self, width=300, placeholder_text="Paste Application ID here")
         self.cid_entry.pack(pady=5)
 
+        # Activity Type Dropdown
         ctk.CTkLabel(self, text="Activity Type:").pack(pady=(10, 0))
         self.type_dropdown = ctk.CTkOptionMenu(self, values=["Playing", "Listening", "Watching", "Competing"])
         self.type_dropdown.pack(pady=5)
 
+        # Details and State
         ctk.CTkLabel(self, text="Details (Top Line):").pack(pady=(10, 0))
         self.details_entry = ctk.CTkEntry(self, width=300)
         self.details_entry.pack(pady=5)
@@ -29,40 +34,17 @@ class NekoRPC(ctk.CTk):
         self.state_entry = ctk.CTkEntry(self, width=300)
         self.state_entry.pack(pady=5)
 
-        ctk.CTkLabel(self, text="Discord Image Key:").pack(pady=(10, 0))
-        self.image_entry = ctk.CTkEntry(self, width=300, placeholder_text="Enter key from Dev Portal")
+        # Large Image Key (From Art Assets)
+        ctk.CTkLabel(self, text="Large Image Key:").pack(pady=(10, 0))
+        self.image_entry = ctk.CTkEntry(self, width=300, placeholder_text="e.g., neko_main")
         self.image_entry.pack(pady=5)
 
-        # --- Image Preview Section ---
-        self.preview_label = ctk.CTkLabel(self, text="No Image Selected", width=200, height=200, fg_color="gray20", corner_radius=10)
-        self.preview_label.pack(pady=10)
-
-        self.upload_btn = ctk.CTkButton(self, text="Select Preview Image", command=self.select_image)
-        self.upload_btn.pack(pady=5)
-
-        self.file_path_label = ctk.CTkLabel(self, text="File: None", font=("Arial", 10), text_color="gray")
-        self.file_path_label.pack()
-
-        # --- Control Buttons ---
-        self.status_indicator = ctk.CTkLabel(self, text="● Offline", text_color="red")
-        self.status_indicator.pack(pady=5)
-
+        # Start/Stop Button
         self.start_btn = ctk.CTkButton(self, text="Start RPC", command=self.toggle_rpc, fg_color="green", height=40)
-        self.start_btn.pack(pady=20)
+        self.start_btn.pack(pady=30)
 
+        # Load saved data
         self.load_config()
-
-    def select_image(self):
-        file_path = ctk.filedialog.askopenfilename(filetypes=[("Image Files", "*.png *.jpg *.jpeg *.gif")])
-        if file_path:
-            # Show the filename
-            filename = os.path.basename(file_path)
-            self.file_path_label.configure(text=f"File: {filename}")
-
-            # Create the preview
-            img = Image.open(file_path)
-            self.preview_img = ctk.CTkImage(light_image=img, dark_image=img, size=(200, 200))
-            self.preview_label.configure(image=self.preview_img, text="")
 
     def load_config(self):
         if os.path.exists("config.json"):
@@ -71,38 +53,57 @@ class NekoRPC(ctk.CTk):
                     data = json.load(f)
                     self.cid_entry.insert(0, data.get("cid", ""))
                     self.image_entry.insert(0, data.get("image", ""))
-            except: pass
+            except:
+                pass
 
     def save_config(self):
         with open("config.json", "w") as f:
-            json.dump({"cid": self.cid_entry.get(), "image": self.image_entry.get()}, f)
+            json.dump({
+                "cid": self.cid_entry.get().strip(),
+                "image": self.image_entry.get().strip()
+            }, f)
 
     def toggle_rpc(self):
         if self.rpc is None:
             try:
-                self.save_config()
-                self.rpc = Presence(self.cid_entry.get())
+                # 1. Get and clean the Client ID
+                client_id = str(self.cid_entry.get().strip())
+                
+                if not client_id:
+                    print("Error: Client ID is empty")
+                    return
+
+                # 2. Connect to Discord
+                self.rpc = Presence(client_id)
                 self.rpc.connect()
 
+                # 3. Map Activity Type
                 activity_map = {"Playing": 0, "Listening": 2, "Watching": 3, "Competing": 5}
                 act_type = activity_map.get(self.type_dropdown.get(), 0)
 
+                # 4. Push Update
                 self.rpc.update(
-                    details=self.details_entry.get(),
-                    state=self.state_entry.get(),
-                    large_image=self.image_entry.get(),
+                    details=str(self.details_entry.get()),
+                    state=str(self.state_entry.get()),
+                    large_image=str(self.image_entry.get().strip()),
                     activity_type=act_type
                 )
                 
-                self.status_indicator.configure(text="● Online", text_color="green")
+                self.save_config()
                 self.start_btn.configure(text="Stop RPC", fg_color="red")
+                print("RPC Started Successfully")
+
             except Exception as e:
-                self.status_indicator.configure(text=f"● Error: {str(e)[:20]}...", text_color="yellow")
+                print(f"Detailed Error: {e}")
+                self.rpc = None
         else:
-            self.rpc.close()
+            try:
+                self.rpc.close()
+            except:
+                pass
             self.rpc = None
-            self.status_indicator.configure(text="● Offline", text_color="red")
             self.start_btn.configure(text="Start RPC", fg_color="green")
+            print("RPC Stopped")
 
 if __name__ == "__main__":
     app = NekoRPC()
